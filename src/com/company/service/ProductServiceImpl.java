@@ -5,6 +5,8 @@ import com.company.constants.UserInput;
 import com.company.db.Database;
 import com.company.model.Product;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class ProductServiceImpl implements ProductService {
 
     private ProductServiceImpl() {
@@ -27,16 +29,26 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(String productName) {
+
+        AtomicBoolean productExist = new AtomicBoolean(false);
+
         Database.PRODUCT_LIST.forEach(product -> {
             if (product.getProductName().equals(productName)) {
                 Database.PRODUCT_LIST.remove(product);
-                Application.init();
+                productExist.set(true);
             }
         });
+        if (!productExist.get()) {
+            System.out.println("Product name doesn't matched for delete. Please provide the valid product name.");
+        }
+        Application.init();
     }
 
     @Override
     public void buyProduct(String productName, int numberOfProduct) {
+
+        AtomicBoolean productExist = new AtomicBoolean(false);
+
         Database.PRODUCT_LIST.forEach(product -> {
             if (product.getProductName().equals(productName)) {
 
@@ -49,13 +61,20 @@ public class ProductServiceImpl implements ProductService {
                     System.out.println("Your total price: " + totalPrice + ". But your available balance: "
                             + Database.USER_AVAILABLE_BALANCE + ". Buy less product.");
                 }
-                Application.init();
+                productExist.set(true);
             }
         });
+        if (!productExist.get()) {
+            System.out.println("Product name doesn't matched for buy. Please provide the valid product name.");
+        }
+        Application.init();
     }
 
     @Override
     public void sellProduct(String productName, int numberOfProduct) {
+
+        AtomicBoolean productExist = new AtomicBoolean(false);
+
         Database.PRODUCT_LIST.forEach(product -> {
             if (product.getProductName().equals(productName)) {
                 if (numberOfProduct <= product.getAvailableProductToSell()) {
@@ -70,9 +89,12 @@ public class ProductServiceImpl implements ProductService {
                     System.out.println(availableProduct + " " + productName + " are available. You can sell "
                             + availableProduct + " or less.");
                 }
-                Application.init();
+                productExist.set(true);
             }
         });
+        if (!productExist.get()) {
+            System.out.println("Product name doesn't matched for sell. Please provide the valid product name.");
+        }
     }
 
     @Override
@@ -82,12 +104,10 @@ public class ProductServiceImpl implements ProductService {
             System.out.println("Product name: " + product.getProductName() + ", Available products: "
                     + product.getAvailableProductToSell() + ", Profit: " + product.getTotalProfitSellingProduct());
         });
-        Application.init();
     }
 
     @Override
     public void availableBalance() {
         System.out.println("Available Balance: " + Database.USER_AVAILABLE_BALANCE);
-        Application.init();
     }
 }

@@ -8,6 +8,13 @@ public class Product {
     private int availableProductToSell;
     private int totalProfitSellingProduct;
 
+    public Product(String productName, int buyPrice, int sellPrice, int availableProductToSell) {
+        this.productName = productName;
+        this.buyPrice = buyPrice;
+        this.sellPrice = sellPrice;
+        this.availableProductToSell = availableProductToSell;
+    }
+
     public void setProductName(String productName) {
         this.productName = productName;
     }
